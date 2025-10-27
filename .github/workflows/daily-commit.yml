@@ -1,0 +1,32 @@
+name: Daily Commit - DevSync Automation
+
+on:
+  schedule:
+    # Runs every day at 09:15 UTC
+    - cron: "15 9 * * *"
+  workflow_dispatch:  # allow manual trigger
+
+jobs:
+  auto-commit-job:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Step by 23f3000058@ds.study.iitm.ac.in
+        run: echo "Running daily commit workflow for DevSync"
+
+      - name: Create daily commit file
+        run: |
+          echo "Last run: $(date -u)" > last-run.txt
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add .
+          git commit -m "Automated daily update - $(date -u)" || echo "No changes to commit"
+          git push
